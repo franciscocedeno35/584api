@@ -1,0 +1,61 @@
+<!-- search.html -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Search Results</title>
+  </head>
+  <body>
+    <h1>Search Results</h1>
+    <button onclick="goBack()">Back</button>
+    <ul id="resultsList"></ul>
+
+    <script>
+      function handleSearch() {
+        const params = new URLSearchParams(window.location.search);
+        const query = params.get("query");
+        const apiKey = "b932a28a292846c3b80c7bd9475e4577";
+        const apiUrl = `https://api.spoonacular.com/recipes/complexSearch?addRecipeInformation=true&addRecipeNutrition=true&instructionsRequired=true&number=5&query=${query}&apiKey=${apiKey}`;
+
+        fetch(apiUrl)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            const results = data.results;
+            const resultsList = document.getElementById("resultsList");
+            resultsList.innerHTML = "";
+
+            results.forEach((result) => {
+              const listItem = document.createElement("li");
+              const title = document.createElement("h3");
+              const image = document.createElement("img");
+              const summary = document.createElement("p");
+
+              title.textContent = result.title;
+              image.src = result.image;
+              summary.innerHTML = result.summary;
+
+              listItem.appendChild(title);
+              listItem.appendChild(image);
+              listItem.appendChild(summary);
+
+              resultsList.appendChild(listItem);
+            });
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+          });
+      }
+
+      function goBack() {
+        window.location.href = "index.html";
+      }
+
+      handleSearch();
+    </script>
+  </body>
+</html>
